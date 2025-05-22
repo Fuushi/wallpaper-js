@@ -85,14 +85,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"status" : "200"}
+
+@app.get("/get_playback_raw")
+def get_playback_raw():
+    return {"playback_raw": state.playback_raw}
 
 @app.get("/get_playback")
-def read_root():
-    return {"playback_raw": state.playback_raw}
+def get_playback():
+    #returns relavint playback info in a stable format which fails gracefully
+
+    raw = state.playback_raw
+
+    base = {
+        "album_cover_url" : "https://cdn.kindling.me/pub.php?id=00000001.jpeg",
+        "title" : "Not Playing",
+        "author" : "...",
+        "duration" : 3599,
+        "progress" : 3599,
+        "is_playing" : False
+    }
+
+    #handle no playback
+    if raw == None:
+        print("No playback")
+        return base
+    
+    #if playback, extract info and return
+    base['album_cover_url'] = raw['item']['album']['images'][0]['url']
+    base['title'] = raw['item']['name']
+    base['author'] = raw['item']['artists'][0]['name']
+    base['duration'] = raw['item']['duration_ms']
+    base['progress'] = raw['progress_ms']
+    base['is_playing'] = raw['is_playing']
+
+    return base
+
 
 @app.get("/get_album_cover_url")
 def get_album_cover_url():
-    fallback_url = "https://cdn.kindling.me/pub.php?id=00000001.jpeg"
+    fallback_url = "https://cdn.kindling.me/pub.php?id=00000001.jpeg" #make point to local img
 
     if state.playback_raw is not None:
         try:
@@ -102,5 +136,7 @@ def get_album_cover_url():
             return {"album_cover_url": fallback_url}
     else:
         return {"album_cover_url": fallback_url}
+    
+
 
 uvicorn.run(app, host="localhost", port=3010, reload=False)
