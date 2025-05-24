@@ -2,5 +2,6 @@
     "spotify_query_rate" : "5000ms",
     "internal_query_rate" : "1000ms",
     "browser_addr" : "localhost:3000",
-    "internal_addr" : "localhost:3010"
+    "internal_addr" : "localhost:3010",
+    "show_debug_lines" : true
 }

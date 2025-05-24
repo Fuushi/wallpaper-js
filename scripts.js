@@ -7,6 +7,7 @@
 import epoch_f_time from "./functions.js"
 
 let playing = true;
+let down = false;
 
 function query() {
     //gets the current expected state from API
@@ -24,7 +25,10 @@ function query() {
 
         if (!playing) {
             //TODO check if page is already down
-            slideDownPageWrapper()
+            if (!down) {
+              down = true;
+              slideDownPageWrapper()
+            }
         } else {
             
             //load elements, then slide page up
@@ -39,14 +43,37 @@ function query() {
 
             document.getElementById("duration_time").textContent = epoch_f_time(data.duration, false, true, true, false, false);
 
-            slideUpPageWrapper();
+            //if playing, and page down, bring page up
+            if (down) {
+                slideUpPageWrapper();
+                down=false;
+            }
+
         }
 
     })
 
 }
 
-setInterval(query, 1000);
+setInterval(query, 1000); //query every second
+
+function updateClocks() {
+  const now = new Date();
+  let hours = now.getHours();
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 should be 12
+
+  const timeString = `${hours}:${minutes}${ampm}`;
+  console.log(timeString);
+
+  document.getElementById("sysClock").textContent=timeString;
+  document.getElementById("smallClock").textContent=timeString;
+};
+
+setInterval(updateClocks, 250); //update every quarter second
 
 
 //animation tests below

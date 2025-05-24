@@ -30,7 +30,7 @@ body, html {
 
 .big_clock {
   position: relative;
-  top: -137px;
+  top: -143px;
   display: flex;
   justify-self: center;
   align-self: center;
@@ -63,13 +63,13 @@ body, html {
 }
 
 .block_content_img {
-    margin-left: 10%;
-    margin-top: 10%;
-    width: 80%;
-    height: 80%;
+    margin-left: 5%;
+    margin-top:  5%;
+    width:  90%;
+    height: 90%;
     object-fit: cover;
     display: block;
-    border-radius: 20px;
+    border-radius: 40px;
 }
 
 .bg_img {
