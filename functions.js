@@ -16,4 +16,12 @@ function epoch_f_time(epoch_ms, showHours = true, showMinutes = true, showSecond
     return parts.join(':');
 }
 
-export default epoch_f_time;
+function clientSideDateTimeInterpolater(date_of_issue, value_at_issue) {
+    //all values in unix millis (UNTESTED)
+    const now = Date.now();
+    const elapsedTime = now - date_of_issue;
+    const interpolatedValue = value_at_issue + elapsedTime;
+    return interpolatedValue;
+}
+
+export { epoch_f_time, clientSideDateTimeInterpolater };

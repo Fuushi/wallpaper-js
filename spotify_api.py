@@ -20,7 +20,7 @@ class SpotifyAPI:
         import spotipy
         from spotipy.oauth2 import SpotifyOAuth
 
-        self.interval = 5 #seconds
+        self.interval = 2 #seconds
         self.state=state
 
         #declare intents
@@ -49,6 +49,8 @@ class SpotifyAPI:
             print("Tick")
             try:
                 self.state.playback_raw = self.spotify_object.current_playback()
+                if self.state.playback_raw != None:
+                    self.state.playback_raw['toi']=time.time()
             except Exception as e:
                 print(f"Error: {e}")
                 print("Error: Failed to get current playback, attempting to reconnect.")
@@ -79,7 +81,7 @@ app = FastAPI()
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://172.16.1.91:3000"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -105,7 +107,8 @@ def get_playback():
         "author" : "...",
         "duration" : 3599,
         "progress" : 3599,
-        "is_playing" : False
+        "is_playing" : False,
+        "doi" : 0.0
     }
 
     #handle no playback
@@ -113,13 +116,17 @@ def get_playback():
         print("No playback")
         return base
     
+    #interpolate timestamps on request
+    lag = (time.time() - raw['toi'])*1000
+    
     #if playback, extract info and return
     base['album_cover_url'] = raw['item']['album']['images'][0]['url']
     base['title'] = raw['item']['name']
     base['author'] = raw['item']['artists'][0]['name']
     base['duration'] = raw['item']['duration_ms']
-    base['progress'] = raw['progress_ms']
+    base['progress'] = raw['progress_ms']+lag
     base['is_playing'] = raw['is_playing']
+    base['doi'] = float(time.time())*1000
 
     return base
 

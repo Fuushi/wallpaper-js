@@ -24,7 +24,7 @@ body, html {
 
 .progress_bar {
   height: 2px; 
-  width: 95%; background: #ccc; 
+  width: 42.5%; background: #ccc; 
   border-radius: 2px;
 }
 

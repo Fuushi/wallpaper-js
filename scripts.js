@@ -4,10 +4,11 @@
 //    // Change the text content of the heading
 //    heading.textContent = "Hello, World!";
 //});
-import epoch_f_time from "./functions.js"
+import { epoch_f_time, clientSideDateTimeInterpolater } from "./functions.js"
 
 let playing = true;
 let down = false;
+let gb_data = null;
 
 function query() {
     //gets the current expected state from API
@@ -19,6 +20,8 @@ function query() {
     fetch("http://localhost:3010/get_playback")
     .then(response => response.json())
     .then(data => {
+
+        gb_data = data; // store the data globally for use in other functions
 
         //playing
         playing = data.is_playing;
@@ -55,7 +58,7 @@ function query() {
 
 }
 
-setInterval(query, 1000); //query every second
+setInterval(query, 500); //query every half second
 
 function updateClocks() {
   const now = new Date();
@@ -67,13 +70,24 @@ function updateClocks() {
   hours = hours ? hours : 12; // 0 should be 12
 
   const timeString = `${hours}:${minutes}${ampm}`;
-  console.log(timeString);
 
   document.getElementById("sysClock").textContent=timeString;
   document.getElementById("smallClock").textContent=timeString;
 };
 
 setInterval(updateClocks, 250); //update every quarter second
+
+function updateProgressBar() {
+  if (gb_data === null) {return;}
+
+  if (gb_data.is_playing) {
+    const currentTime = Date.now(); // Get current time in Unix milliseconds
+    const progress = ((currentTime - gb_data.doi)+gb_data.progress) / gb_data.duration * 100; // Calculate progress percentage
+    document.getElementById("progress_bar").style.width = `${progress}%`; // Update progress bar width
+  }
+}
+
+setInterval(updateProgressBar, 33.33); // Update progress bar every 33.33 milliseconds (30 FPS)
 
 
 //animation tests below
@@ -90,5 +104,3 @@ function slideUpPageWrapper() {
   wrapper.style.transform = "translateY(0)";
   idle_wrapper.style.transform = "translateY(0)";
 }
-
-document.addEventListener("keydown", slideDownPageWrapper);
