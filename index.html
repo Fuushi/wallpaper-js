@@ -29,7 +29,28 @@
         <section style = "width: 840px" class="block">
           <div class="vertical_container">
             <div class="vertical_container_content" style = "align-items: flex-end;"><p id="smallClock" class="big_text">00:00</p></div>
-            <div class="vertical_container_content" style = "align-items: flex-start;"><p id="title" class="big_text">Not Playing...</p></div>
+            <div class="vertical_container_content" style="align-items: flex-start; position: relative;">
+              <div style="width: 100%; height: 200%; white-space: nowrap; overflow: hidden; position: absolute; border-radius: 0px;">
+              <p id="title" class="big_text" style="display: inline-block; height: 70px; margin: 0; animation: scroll-text 10s linear infinite;">
+                Not Playing...
+              </p>
+              </div>
+            </div>
+            <style>
+                @keyframes scroll-text {
+                0% { transform: translateX(0); }
+                10% { transform: translateX(0); }
+                90% { transform: translateX(calc(-100% + 800px)); }
+                100% { transform: translateX(calc(-100% + 800px)); }
+                }
+                #title {
+                padding-left: 10px;
+                }
+                #title {
+                animation: scroll-text 10s linear infinite;
+                }
+
+            </style>
             <div class="vertical_container_content" style = "align-items: flex-start;"><p id="author" class="small_text">...</p></div>
             <div class="vertical_container_content">
               <div class="progress_bar_container" style="width: 95%; height: 4px; background-color: gray; border-radius: 2px; overflow: hidden;">

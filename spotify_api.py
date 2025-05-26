@@ -4,6 +4,13 @@ keys = Keys()
 import os, time, sys, json
 from threading import Thread
 
+#parsing functions
+def extract_authors(artists):
+    a=[]
+    for artist in artists:
+        a.append(artist['name'])
+    return a
+
 #wraps the spotify rest api to make it easier to use
 
 ##create state object to hold spotify state, accessed by the API
@@ -104,7 +111,7 @@ def get_playback():
     base = {
         "album_cover_url" : "https://cdn.kindling.me/pub.php?id=00000001.jpeg",
         "title" : "Not Playing",
-        "author" : "...",
+        "author" : ["..."],
         "duration" : 3599,
         "progress" : 3599,
         "is_playing" : False,
@@ -122,7 +129,7 @@ def get_playback():
     #if playback, extract info and return
     base['album_cover_url'] = raw['item']['album']['images'][0]['url']
     base['title'] = raw['item']['name']
-    base['author'] = raw['item']['artists'][0]['name']
+    base['author'] = extract_authors(raw['item']['artists']) #raw['item']['artists'][0]['name']
     base['duration'] = raw['item']['duration_ms']
     base['progress'] = raw['progress_ms']+lag
     base['is_playing'] = raw['is_playing']

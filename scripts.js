@@ -104,3 +104,24 @@ function slideUpPageWrapper() {
   wrapper.style.transform = "translateY(0)";
   idle_wrapper.style.transform = "translateY(0)";
 }
+
+// --- Disable scroll animation for #title if its width is less than 800px ---
+function updateTitleAnimation() {
+  const title = document.getElementById('title');
+  if (!title) return;
+  // Remove animation to measure natural width
+  title.style.animation = '';
+  // Use scrollWidth for actual text width
+  const width = title.scrollWidth;
+  if (width > 800) {
+    title.style.animation = 'scroll-text 10s linear infinite';
+  } else {
+    title.style.animation = 'none';
+  }
+}
+window.addEventListener('DOMContentLoaded', updateTitleAnimation);
+window.addEventListener('resize', updateTitleAnimation);
+
+// Also update when title text changes
+const titleObserver = new MutationObserver(updateTitleAnimation);
+titleObserver.observe(document.getElementById('title'), { childList: true, characterData: true, subtree: true });
