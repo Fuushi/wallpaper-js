@@ -123,6 +123,14 @@ body, html {
   height: 368px;
 }
 
+.noise_tex {
+  position: absolute;
+  width:  100%;
+  height: 100%;
+  top: 50%;
+  background-color: gray;
+}
+
 #listener_page {
   top: 0;
   left: 0;

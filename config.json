@@ -3,5 +3,9 @@
     "internal_query_rate" : "1000ms",
     "browser_addr" : "localhost:3000",
     "internal_addr" : "localhost:3010",
-    "show_debug_lines" : true
+    "show_debug_lines" : true,
+    "low_power_device_tracking" : true,
+    "low_power_device_ip" : "172.16.1.118",
+    "low_power_device_ping_interval" : 60,
+    "low_power_device_track_dur" : 30
 }

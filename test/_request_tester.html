@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Localhost Query Tester</title>
+</head>
+<body>
+    <h1>Querying localhost:3015 every second...</h1>
+    <pre id="output">Waiting for response...</pre>
+    <script>
+        async function queryServer() {
+            try {
+                const response = await fetch('http://localhost:3015/device_status');
+                const text = await response.text();
+                document.getElementById('output').textContent = text;
+            } catch (err) {
+                document.getElementById('output').textContent = 'Error: ' + err;
+            }
+        }
+        setInterval(queryServer, 1000);
+        queryServer();
+    </script>
+</body>
+</html>

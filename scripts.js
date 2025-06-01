@@ -10,6 +10,12 @@ let playing = true;
 let down = false;
 let gb_data = null;
 
+let config = {};
+fetch('./config.json')
+  .then(response => response.json())
+  .then(json => { config = json; })
+  .catch(err => { console.error('Failed to load config.json', err); });
+
 function query() {
     //gets the current expected state from API
 
@@ -58,8 +64,6 @@ function query() {
 
 }
 
-setInterval(query, 500); //query every half second
-
 function updateClocks() {
   const now = new Date();
   let hours = now.getHours();
@@ -75,8 +79,6 @@ function updateClocks() {
   document.getElementById("smallClock").textContent=timeString;
 };
 
-setInterval(updateClocks, 250); //update every quarter second
-
 function updateProgressBar() {
   if (gb_data === null) {return;}
 
@@ -86,9 +88,6 @@ function updateProgressBar() {
     document.getElementById("progress_bar").style.width = `${progress}%`; // Update progress bar width
   }
 }
-
-setInterval(updateProgressBar, 33.33); // Update progress bar every 33.33 milliseconds (30 FPS)
-
 
 //animation tests below
 function slideDownPageWrapper() {
@@ -122,6 +121,40 @@ function updateTitleAnimation() {
 window.addEventListener('DOMContentLoaded', updateTitleAnimation);
 window.addEventListener('resize', updateTitleAnimation);
 
+//style controller (global)
+function style_controller() {
+  // here will by style customizations for 'modes'
+
+  // use config details to toggle away mode 
+
+  const noise_tex = document.getElementsByClassName("noise_tex");
+  for (let i = 0; i < noise_tex.length; i++) {
+    const randomColor = `rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`;
+    noise_tex[i].style.backgroundColor = randomColor;
+  }
+
+}
+
+
+
+// define update conditions
+
 // Also update when title text changes
 const titleObserver = new MutationObserver(updateTitleAnimation);
 titleObserver.observe(document.getElementById('title'), { childList: true, characterData: true, subtree: true });
+
+setInterval(query, 500); //query every half second
+
+setInterval(updateProgressBar, 33.33); // Update progress bar every 33.33 milliseconds (30 FPS)
+
+setInterval(updateClocks, 250); //update every quarter second
+
+console.log(config);
+if (config.low_power_device_tracking) {
+  setInterval(style_controller, 1000); //every 1 seconds, check for style changes
+} else {
+  const noise_tex = document.getElementsByClassName("noise_tex");
+  for (let i = 0; i < noise_tex.length; i++) {
+    noise_tex[i].style.visibility = 'hidden';
+  }
+}
