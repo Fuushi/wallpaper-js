@@ -1,25 +1,22 @@
-//document.addEventListener("DOMContentLoaded", function() {
-//    // Select an element with the ID "myHeading"
-//    const heading = document.getElementById("text_box_1");
-//    // Change the text content of the heading
-//    heading.textContent = "Hello, World!";
-//});
+//includes
 import { epoch_f_time, clientSideDateTimeInterpolater } from "./includes/functions.js"
 import { hsvToRgb, rgbToHsv } from "./includes/hsv-utils.js";
+
+// // Global variables
 let playing = true;
 let down = false;
 let gb_data = null;
 let device_connected = false; //depreciate?
 
-
+// Load configuration from config.json
 let config = {};
 fetch('./config.json')
   .then(response => response.json())
   .then(json => { config = json; })
   .catch(err => { console.error('Failed to load config.json', err); });
 
+//query function for spotify api
 function query() {
-    //gets the current expected state from API
 
     // API at 172.16.1.91:3000/api.php
     // Fetch the current state from the API
@@ -66,6 +63,7 @@ function query() {
 
 }
 
+//function for updating (all) clocks to current datetime
 function updateClocks() {
   const now = new Date();
   let hours = now.getHours();
@@ -81,6 +79,7 @@ function updateClocks() {
   document.getElementById("smallClock").textContent=timeString;
 };
 
+//function for progress bar 
 function updateProgressBar() {
   if (gb_data === null) {return;}
 
@@ -91,7 +90,7 @@ function updateProgressBar() {
   }
 }
 
-//animation tests below
+//animation for sliding page down
 function slideDownPageWrapper() {
   const wrapper = document.getElementById("listener_page");
   const idle_wrapper = document.getElementById("idle_page");
@@ -99,6 +98,7 @@ function slideDownPageWrapper() {
   idle_wrapper.style.transform = "translateY(100vh)";
 }
 
+//... animation for sliding page up
 function slideUpPageWrapper() {
   const wrapper = document.getElementById("listener_page");
   const idle_wrapper = document.getElementById("idle_page");
@@ -106,6 +106,7 @@ function slideUpPageWrapper() {
   idle_wrapper.style.transform = "translateY(0)";
 }
 
+//scroll animation for title
 // --- Disable scroll animation for #title if its width is less than 800px ---
 function updateTitleAnimation() {
   const title = document.getElementById('title');
