@@ -4,8 +4,8 @@
 //    // Change the text content of the heading
 //    heading.textContent = "Hello, World!";
 //});
-import { epoch_f_time, clientSideDateTimeInterpolater } from "./functions.js"
-import { hsvToRgb, rgbToHsv } from "./hsv-utils.js";
+import { epoch_f_time, clientSideDateTimeInterpolater } from "./includes/functions.js"
+import { hsvToRgb, rgbToHsv } from "./includes/hsv-utils.js";
 let playing = true;
 let down = false;
 let gb_data = null;
