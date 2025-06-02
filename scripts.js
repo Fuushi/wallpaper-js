@@ -9,6 +9,8 @@ import { epoch_f_time, clientSideDateTimeInterpolater } from "./functions.js"
 let playing = true;
 let down = false;
 let gb_data = null;
+let device_connected = false; //depreciate?
+
 
 let config = {};
 fetch('./config.json')
@@ -125,36 +127,67 @@ window.addEventListener('resize', updateTitleAnimation);
 function style_controller() {
   // here will by style customizations for 'modes'
 
-  // use config details to toggle away mode 
+  //get element
+  const noise_tex = document.getElementsByClassName("noise_tex")[0];
 
-  const noise_tex = document.getElementsByClassName("noise_tex");
-  for (let i = 0; i < noise_tex.length; i++) {
-    const randomColor = `rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`;
-    noise_tex[i].style.backgroundColor = randomColor;
-  }
 
+  // query api
+  fetch("http://localhost:3015/device_status")
+  .then(response => response.json())
+  .then(data => {
+    //
+    console.log(data.device_status)
+    //data.device_status
+    if (data.device_status) {
+      //hide static
+      noise_tex.style.visibility='hidden';
+    } else {
+      //show static
+      noise_tex.style.visibility='visible';
+      
+      //randomize color
+      const randomColor = `rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`;
+      noise_tex.style.backgroundColor = randomColor;
+    }
+  })
 }
 
 
 
 // define update conditions
 
-// Also update when title text changes
-const titleObserver = new MutationObserver(updateTitleAnimation);
-titleObserver.observe(document.getElementById('title'), { childList: true, characterData: true, subtree: true });
+// Wait for config to load before starting intervals and observers
+function initializeApp() {
+  // Also update when title text changes
+  const titleObserver = new MutationObserver(updateTitleAnimation);
+  titleObserver.observe(document.getElementById('title'), { childList: true, characterData: true, subtree: true });
 
-setInterval(query, 500); //query every half second
+  setInterval(query, 500); //query every half second
 
-setInterval(updateProgressBar, 33.33); // Update progress bar every 33.33 milliseconds (30 FPS)
+  setInterval(updateProgressBar, 33.33); // Update progress bar every 33.33 milliseconds (30 FPS)
 
-setInterval(updateClocks, 250); //update every quarter second
+  setInterval(updateClocks, 250); //update every quarter second
 
-console.log(config);
-if (config.low_power_device_tracking) {
-  setInterval(style_controller, 1000); //every 1 seconds, check for style changes
-} else {
-  const noise_tex = document.getElementsByClassName("noise_tex");
-  for (let i = 0; i < noise_tex.length; i++) {
-    noise_tex[i].style.visibility = 'hidden';
+  console.log(config);
+  if (config.low_power_device_tracking) {
+    setInterval(style_controller, 1000); //every 1 seconds, check for style changes
+  } else {
+    const noise_tex = document.getElementsByClassName("noise_tex");
+    for (let i = 0; i < noise_tex.length; i++) {
+      noise_tex[i].style.visibility = 'hidden';
+    }
   }
 }
+
+// Wait for config to be loaded before initializing
+fetch('./config.json')
+  .then(response => response.json())
+  .then(json => {
+    config = json;
+    initializeApp();
+  })
+  .catch(err => {
+    console.error('Failed to load config.json', err);
+    // Optionally, still initialize with default config
+    initializeApp();
+  });
