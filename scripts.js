@@ -5,7 +5,7 @@
 //    heading.textContent = "Hello, World!";
 //});
 import { epoch_f_time, clientSideDateTimeInterpolater } from "./functions.js"
-
+import { hsvToRgb, rgbToHsv } from "./hsv-utils.js";
 let playing = true;
 let down = false;
 let gb_data = null;
@@ -129,6 +129,7 @@ function style_controller() {
 
   //get element
   const noise_tex = document.getElementsByClassName("noise_tex")[0];
+  const clock_tex = document.getElementsByClassName("big_clock")[0];
 
 
   // query api
@@ -141,13 +142,32 @@ function style_controller() {
     if (data.device_status) {
       //hide static
       noise_tex.style.visibility='hidden';
+      clock_tex.style.color = 'white'; // reset clock color to white
     } else {
       //show static
       noise_tex.style.visibility='visible';
       
+      
       //randomize color
       const randomColor = `rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`;
+
+      //convert random color to hsv
+      const rgbValues = randomColor.match(/\d+/g).map(Number); // Extract RGB values
+      const randomColorHsv = rgbToHsv(rgbValues[0], rgbValues[1], rgbValues[2]); // Convert to HSV
+
+      //offset by 90 degrees
+      const hueOffset = 180; // Offset in degrees
+      const newHue = (randomColorHsv.h + hueOffset) % 360; // Ensure hue wraps around
+
+      //convert new value to rgb
+      const newRgb = hsvToRgb(newHue, randomColorHsv.s, randomColorHsv.v); // Convert back to RGB
+
+      //convert to style format
+      const randomColor2 = `rgb(${newRgb.r}, ${newRgb.g}, ${newRgb.b})`; // Create new RGB string
+
+      //assign to elements
       noise_tex.style.backgroundColor = randomColor;
+      clock_tex.style.color = randomColor2; // Assign the new color to the clock text
     }
   })
 }
