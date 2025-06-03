@@ -131,6 +131,7 @@ function style_controller() {
   //get element
   const noise_tex = document.getElementsByClassName("noise_tex")[0];
   const clock_tex = document.getElementsByClassName("big_clock")[0];
+  const listener_div = document.getElementById("listener_page");
 
 
   // query api
@@ -143,10 +144,13 @@ function style_controller() {
       //hide static
       noise_tex.style.visibility='hidden';
       clock_tex.style.color = 'white'; // reset clock color to white
+      listener_div.style.visibility='visible';
     } else {
       //show static
       noise_tex.style.visibility='visible';
-      
+
+      //hide listener page
+      listener_div.style.visibility='hidden';
       
       //randomize color
       const randomColor = `rgb(${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)},${Math.floor(Math.random()*256)})`;
