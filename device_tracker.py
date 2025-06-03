@@ -83,6 +83,10 @@ def read_root():
 @app.get("/device_status")
 def device_status():
     #returns active device status
+
+    if config['low_power_always_true']: return True
+    if config['low_power_always_false']: return True
+
     if True in state.track_history:
         return {
             "status" : 200,

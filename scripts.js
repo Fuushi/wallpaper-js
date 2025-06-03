@@ -138,7 +138,6 @@ function style_controller() {
   .then(response => response.json())
   .then(data => {
     //
-    console.log(data.device_status)
     //data.device_status
     if (data.device_status) {
       //hide static

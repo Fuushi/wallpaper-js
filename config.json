@@ -7,5 +7,7 @@
     "low_power_device_tracking" : true,
     "low_power_device_ip" : "172.16.1.118",
     "low_power_device_ping_interval" : 60,
-    "low_power_device_track_dur" : 30
+    "low_power_device_track_dur" : 30,
+    "low_power_always_true" : false,
+    "low_power_always_false" : false
 }
